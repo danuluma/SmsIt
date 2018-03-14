@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         text = (EditText) findViewById(R.id.text);
         number = (EditText) findViewById(R.id.number);
-
+//declare the intents
         sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
         deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
     }
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        listen for broadcast messages from system and show toastsa accordingly
         smsSentReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+
+//        registres the receivers
         registerReceiver(smsSentReceiver, new IntentFilter(SENT));
         registerReceiver(smsDeliveredReceiver, new IntentFilter(DELIVERED));
     }
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+//        unregister the receiver
         unregisterReceiver(smsSentReceiver);
         unregisterReceiver(smsDeliveredReceiver);
     }
@@ -98,10 +102,12 @@ public class MainActivity extends AppCompatActivity {
     public void send(View v) {
         String message = text.getText().toString();
         String tel = number.getText().toString();
+//        check and request sms sending permissoions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSION_SEND_SMS);
         } else {
+//            send sms if permissions are granted
             SmsManager sms = SmsManager.getDefault();
             sms.sendTextMessage(tel, null, message, sentPI, deliveredPI);
         }
